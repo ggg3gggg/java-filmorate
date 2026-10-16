@@ -27,7 +27,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    void checkTheMaximumLengthOfTheFilmDescription(){
+    void checkTheMaximumLengthOfTheFilmDescription() {
         FilmController controller = new FilmController();
         Film film = new Film();
         film.setName("Дюна");
