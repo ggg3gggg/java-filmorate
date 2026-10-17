@@ -13,7 +13,6 @@ public class FilmControllerTest {
         FilmController controller = new FilmController();
         Film film = new Film();
         film.setName("");
-
         assertThrows(ValidationException.class, () -> controller.create(film));
     }
 
@@ -22,7 +21,6 @@ public class FilmControllerTest {
         FilmController controller = new FilmController();
         Film film = new Film();
         film.setName(" ");
-
         assertThrows(ValidationException.class, () -> controller.create(film));
     }
 
@@ -73,7 +71,6 @@ public class FilmControllerTest {
         film.setName("Дюна");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
         film.setDuration(120);
-
         assertThrows(ValidationException.class, () -> controller.create(film));
     }
 
@@ -85,7 +82,6 @@ public class FilmControllerTest {
         film.setDescription("a".repeat(201));
         film.setReleaseDate(LocalDate.of(2021, 9, 3));
         film.setDuration(120);
-
         assertThrows(ValidationException.class, () -> controller.create(film));
     }
 
