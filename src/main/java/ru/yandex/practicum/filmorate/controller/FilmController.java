@@ -54,6 +54,23 @@ public class FilmController {
             throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
         }
 
+        if (film.getName() == null || film.getName().isBlank()) {
+            log.error("Название не может быть пустым");
+            throw new ValidationException("Название не может быть пустым");
+        }
+        if (film.getDescription() != null && film.getDescription().length() > 200) {
+            log.error("Описание не должно превышать 200 символов");
+            throw new ValidationException("Описание не должно превышать 200 символов");
+        }
+        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.error("Дата релиза должна быть не раньше 28.12.1895");
+            throw new ValidationException("Дата релиза должна быть не раньше 28.12.1895");
+        }
+        if (film.getDuration() <= 0) {
+            log.error("Продолжительность фильма должна быть положительным числом");
+            throw new ValidationException("Продолжительность фильма должна быть положительным числом");
+        }
+
         Film existingFilm = films.get(film.getId());
 
         existingFilm.setName(film.getName());
@@ -64,4 +81,5 @@ public class FilmController {
         log.info("Фильм обновлен: {}", existingFilm.getName());
         return existingFilm;
     }
+
 }
