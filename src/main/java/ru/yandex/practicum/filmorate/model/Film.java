@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 public class Film {
+    private Set<Integer> likes = new HashSet<>();
     private int id;
     private String name;
     private String description;

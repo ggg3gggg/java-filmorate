@@ -3,24 +3,43 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 @RestController   //говорит Spring, что класс обрабатывает HTTP-запросы и возвращает данные, например JSON.
 @RequestMapping("/users")   //задаёт общий путь для эндпоинтов контроллера.
 public class UserController {
-    private Map<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private final UserStorage userStorage;
+    private final UserService userService;
+
+    public UserController(UserStorage userStorage, UserService userService) {
+        this.userStorage = userStorage;
+        this.userService = userService;
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
 
     @GetMapping
     public Collection<User> findAll() {
-        return users.values();
+        return userStorage.findAll();
     }
 
     @PostMapping
@@ -40,19 +59,20 @@ public class UserController {
             log.error("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будушем");
         }
-        log.info("Пользователь добавлен: {}", user.getLogin());
-        user.setId(nextId++);
-        users.put(user.getId(), user);
+        User createdUser = userStorage.create(user);
+        log.info("Добавлен пользователь: {}", createdUser.getLogin());
 
-        return user;
+        return createdUser;
     }
 
+    @GetMapping("/{id}")
+    public User findById(@PathVariable int id) {
+        return userStorage.findById(id);
+    }
 
     @PutMapping
     public User update(@RequestBody User user) {
-        if (users.values().stream().noneMatch(u -> u.getId() == user.getId())) {
-            throw new NotFoundException("Пользователь с id " + user.getId() + " не найден");
-        }
+        userStorage.findById(user.getId());
 
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Имейл должен быть указан и содержать символ @");
@@ -70,14 +90,13 @@ public class UserController {
             user.setName(user.getLogin());
         }
 
-        User existingUser = users.get(user.getId());
+        User updatedUser = userStorage.update(user);
+        log.info("Пользователь обновлен: {}", updatedUser.getLogin());
+        return updatedUser;
+    }
 
-        existingUser.setEmail(user.getEmail());
-        existingUser.setLogin(user.getLogin());
-        existingUser.setName(user.getName());
-        existingUser.setBirthday(user.getBirthday());
-
-        log.info("Пользователь обновлен: {}", existingUser.getLogin());
-        return existingUser;
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriends(@PathVariable int id) {
+        return userService.getFriends(id);
     }
 }
