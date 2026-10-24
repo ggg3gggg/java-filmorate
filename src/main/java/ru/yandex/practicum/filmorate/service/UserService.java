@@ -19,9 +19,8 @@ public class UserService {
         User user = userStorage.findById(userId);
         User friend = userStorage.findById(friendId);
 
-        userStorage.update(user);
-        userStorage.update(friend);
-
+        user.getFriends().add(friendId);
+        friend.getFriends().add(userId);
         log.info("Пользователь {} добавил друга {}", userId, friendId);
     }
 
@@ -31,10 +30,6 @@ public class UserService {
 
         user.getFriends().remove(friendId);
         friend.getFriends().remove(userId);
-
-        userStorage.update(user);
-        userStorage.update(friend);
-
         log.info("Пользователь {} удалил друга {}", userId, friendId);
     }
 
@@ -78,6 +73,7 @@ public class UserService {
     }
 
     public User update(User user) {
+        userStorage.findById(user.getId());
         return userStorage.update(user);
     }
 }
