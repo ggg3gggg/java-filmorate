@@ -8,17 +8,14 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 @RestController   //говорит Spring, что класс обрабатывает HTTP-запросы и возвращает данные, например JSON.
 @RequestMapping("/users")   //задаёт общий путь для эндпоинтов контроллера.
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final UserStorage userStorage;
     private final UserService userService;
 
-    public UserController(UserStorage userStorage, UserService userService) {
-        this.userStorage = userStorage;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -39,7 +36,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> findAll() {
-        return userStorage.findAll();
+        return userService.findAll();
     }
 
     @PostMapping
@@ -59,7 +56,7 @@ public class UserController {
             log.error("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будушем");
         }
-        User createdUser = userStorage.create(user);
+        User createdUser = userService.create(user);
         log.info("Добавлен пользователь: {}", createdUser.getLogin());
 
         return createdUser;
@@ -67,12 +64,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findById(@PathVariable int id) {
-        return userStorage.findById(id);
+        return userService.findById(id);
     }
 
     @PutMapping
     public User update(@RequestBody User user) {
-        userStorage.findById(user.getId());
 
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.error("Имейл должен быть указан и содержать символ @");
@@ -90,7 +86,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
 
-        User updatedUser = userStorage.update(user);
+        User updatedUser = userService.update(user);
         log.info("Пользователь обновлен: {}", updatedUser.getLogin());
         return updatedUser;
     }

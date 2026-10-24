@@ -19,9 +19,6 @@ public class UserService {
         User user = userStorage.findById(userId);
         User friend = userStorage.findById(friendId);
 
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
-
         userStorage.update(user);
         userStorage.update(friend);
 
@@ -59,13 +56,28 @@ public class UserService {
 
     public List<User> getFriends(int userId) {
         User user = userStorage.findById(userId);
-        List<User> friends = new ArrayList<>();
 
-        for (Integer friendId : user.getFriends()) {
-            friends.add(userStorage.findById(friendId));
-        }
+        List<User> friends = user.getFriends().stream()
+                .map(userStorage::findById)
+                .toList();
 
         log.info("Получен список друзей пользователя {}. Количество: {}", userId, friends.size());
         return friends;
+    }
+
+    public List<User> findAll() {
+        return userStorage.findAll().stream().toList();
+    }
+
+    public User findById(int id) {
+        return userStorage.findById(id);
+    }
+
+    public User create(User user) {
+        return userStorage.create(user);
+    }
+
+    public User update(User user) {
+        return userStorage.update(user);
     }
 }

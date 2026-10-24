@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -16,11 +15,9 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
@@ -41,12 +38,12 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        return filmService.findAll();
     }
 
     @GetMapping("/{id}")
     public Film findById(@PathVariable int id) {
-        return filmStorage.findById(id);
+        return filmService.findById(id);
     }
 
     @PostMapping
@@ -68,14 +65,13 @@ public class FilmController {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
 
-        Film createdFilm = filmStorage.create(film);
+        Film createdFilm = filmService.create(film);
         log.info("Добавлен фильм: {}", createdFilm.getName());
         return createdFilm;
     }
 
     @PutMapping
     public Film update(@RequestBody Film film) {
-        filmStorage.findById(film.getId());
 
         if (film.getName() == null || film.getName().isBlank()) {
             log.error("Название не может быть пустым");
@@ -94,7 +90,7 @@ public class FilmController {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
 
-        Film updatedFilm = filmStorage.update(film);
+        Film updatedFilm = filmService.update(film);
         log.info("Фильм обновлен: {}", updatedFilm.getName());
         return updatedFilm;
     }

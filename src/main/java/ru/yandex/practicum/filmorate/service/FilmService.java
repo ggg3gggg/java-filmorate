@@ -22,7 +22,6 @@ public class FilmService {
         userStorage.findById(userId);
         Film film = filmStorage.findById(filmId);
         film.getLikes().add(userId);
-        filmStorage.update(film);
 
         log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
     }
@@ -31,7 +30,6 @@ public class FilmService {
         userStorage.findById(userId);
         Film film = filmStorage.findById(filmId);
         film.getLikes().remove(userId);
-        filmStorage.update(film);
 
         log.info("Пользователь {} удалил лайк фильму {}", userId, filmId);
     }
@@ -46,5 +44,21 @@ public class FilmService {
 
         log.info("Получен список популярных фильмов. Количество: {}", films.size());
         return films;
+    }
+
+    public List<Film> findAll() {
+        return filmStorage.findAll().stream().toList();
+    }
+
+    public Film findById(int id) {
+        return filmStorage.findById(id);
+    }
+
+    public Film create(Film film) {
+        return filmStorage.create(film);
+    }
+
+    public Film update(Film film) {
+        return filmStorage.update(film);
     }
 }

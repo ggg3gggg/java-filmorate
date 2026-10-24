@@ -19,7 +19,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("");
         Assertions.assertThrows(ValidationException.class, () -> controller.create(film));
@@ -30,7 +30,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName(" ");
         Assertions.assertThrows(ValidationException.class, () -> controller.create(film));
@@ -41,7 +41,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setDescription("a".repeat(10));
@@ -53,7 +53,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
@@ -66,7 +66,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setReleaseDate(LocalDate.of(1900, 12, 27));
@@ -79,7 +79,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setReleaseDate(LocalDate.of(2021, 9, 3));
@@ -93,7 +93,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
@@ -106,7 +106,7 @@ public class FilmControllerTest {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
         FilmService filmService = new FilmService(filmStorage, userStorage);
-        FilmController controller = new FilmController(filmStorage, filmService);
+        FilmController controller = new FilmController(filmService);
         Film film = new Film();
         film.setName("Дюна");
         film.setDescription("a".repeat(201));
