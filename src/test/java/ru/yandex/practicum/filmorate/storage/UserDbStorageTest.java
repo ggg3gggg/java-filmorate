@@ -1,4 +1,3 @@
-
 package ru.yandex.practicum.filmorate.storage;
 
 import org.junit.jupiter.api.Test;
@@ -8,16 +7,13 @@ import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
-
 import java.time.LocalDate;
 import java.util.Collection;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 @Import(UserDbStorage.class)
 public class UserDbStorageTest {
-
     @Autowired
     private UserDbStorage userDbStorage;
 
