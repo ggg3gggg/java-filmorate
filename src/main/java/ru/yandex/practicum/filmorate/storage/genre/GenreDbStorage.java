@@ -15,7 +15,7 @@ public class GenreDbStorage {
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    
+
     private static final String FIND_ALL_QUERY =
             "SELECT * FROM genres ORDER BY id";
 

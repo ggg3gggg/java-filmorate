@@ -10,9 +10,11 @@ import java.util.List;
 @Repository
 public class MpaDbStorage {
     private final JdbcTemplate jdbcTemplate;
+
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     private static final String FIND_ALL_QUERY =
             "SELECT * FROM mpa ORDER BY id";
 
