@@ -1,26 +1,49 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-@RestController  //говорит Spring, что класс обрабатывает HTTP-запросы и возвращает данные, например JSON.
-@RequestMapping("/films")  //задаёт общий путь для эндпоинтов контроллера.
+
+@RestController
+@RequestMapping("/films")
 public class FilmController {
-    private Map<Integer, Film> films = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private int nextId = 1;
+    private final FilmService filmService;
+
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable int id, @PathVariable int userId) {
+        filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        return filmService.getPopularFilms(count);
+    }
 
     @GetMapping
     public Collection<Film> findAll() {
-        return films.values();
+        return filmService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Film findById(@PathVariable int id) {
+        return filmService.findById(id);
     }
 
     @PostMapping
@@ -41,18 +64,14 @@ public class FilmController {
             log.error("Продолжительность фильма должна быть положительным числом");
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
-        log.info("Добавлен фильм: {}", film.getName());
-        film.setId(nextId++);
-        films.put(film.getId(), film);
 
-        return film;
+        Film createdFilm = filmService.create(film);
+        log.info("Добавлен фильм: {}", createdFilm.getName());
+        return createdFilm;
     }
 
     @PutMapping
     public Film update(@RequestBody Film film) {
-        if (films.values().stream().noneMatch(f -> f.getId() == film.getId())) {
-            throw new NotFoundException("Фильм с id " + film.getId() + " не найден");
-        }
 
         if (film.getName() == null || film.getName().isBlank()) {
             log.error("Название не может быть пустым");
@@ -71,15 +90,9 @@ public class FilmController {
             throw new ValidationException("Продолжительность фильма должна быть положительным числом");
         }
 
-        Film existingFilm = films.get(film.getId());
-
-        existingFilm.setName(film.getName());
-        existingFilm.setDescription(film.getDescription());
-        existingFilm.setReleaseDate(film.getReleaseDate());
-        existingFilm.setDuration(film.getDuration());
-
-        log.info("Фильм обновлен: {}", existingFilm.getName());
-        return existingFilm;
+        Film updatedFilm = filmService.update(film);
+        log.info("Фильм обновлен: {}", updatedFilm.getName());
+        return updatedFilm;
     }
-
 }
+
