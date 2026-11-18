@@ -10,17 +10,16 @@ import java.util.List;
 @Repository
 public class GenreDbStorage {
     private final JdbcTemplate jdbcTemplate;
-    Genre genre = new Genre();
-
-    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     private static final String FIND_ALL_QUERY =
             "SELECT * FROM genres ORDER BY id";
 
     private static final String FIND_BY_ID =
             "SELECT * FROM genres WHERE id = ?";
+
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<Genre> findAll() {
         return jdbcTemplate.query(FIND_ALL_QUERY, (rs, rowNum) -> {

@@ -48,32 +48,7 @@ public class FilmController {
 
     @PostMapping
     public Film create(@RequestBody Film film) {
-        log.info("NAME = {}", film.getName());
-        log.info("MPA = {}", film.getMpa() == null ? null : film.getMpa().getId());
-        log.info("GENRES COUNT = {}",
-                film.getGenres() == null ? null : film.getGenres().size());
-
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new ValidationException("Название не может быть пустым");
-        }
-
-        if (film.getDescription() != null && film.getDescription().length() > 200) {
-            throw new ValidationException("Описание не должно превышать 200 символов");
-        }
-
-        if (film.getReleaseDate() == null ||
-                film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Дата релиза должна быть не раньше 28.12.1895");
-        }
-
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Продолжительность фильма должна быть положительным числом");
-        }
-
-        Film createdFilm = filmService.create(film);
-        log.info("Добавлен фильм: {}", createdFilm.getName());
-
-        return createdFilm;
+        return filmService.create(film);
     }
 
     @PutMapping

@@ -57,15 +57,18 @@ public class FilmDbStorage implements FilmStorage {
                     "f.duration, f.mpa_id, m.name " +
                     "ORDER BY COUNT(l.user_id) DESC " +
                     "LIMIT ?";
+    private final FilmRowMapper filmRowMapper;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate,
+                         FilmRowMapper filmRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.filmRowMapper = filmRowMapper;
     }
 
     @Override
     public Collection<Film> findAll() {
         List<Film> films = jdbcTemplate.query(
-                FIND_ALL_QUERY, new FilmRowMapper()
+                FIND_ALL_QUERY, filmRowMapper
         );
 
         for (Film film : films) {
@@ -79,7 +82,7 @@ public class FilmDbStorage implements FilmStorage {
     public Film findById(int id) {
         try {
             Film film = jdbcTemplate.queryForObject(
-                    FIND_BY_ID, new FilmRowMapper(), id
+                    FIND_BY_ID, filmRowMapper, id
             );
 
             film.setGenres(getFilmGenres(id));
@@ -188,7 +191,7 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getPopularFilms(int count) {
         List<Film> films = jdbcTemplate.query(
                 FIND_POPULAR,
-                new FilmRowMapper(),
+                filmRowMapper,
                 count
         );
 
@@ -198,5 +201,4 @@ public class FilmDbStorage implements FilmStorage {
 
         return films;
     }
-
 }
