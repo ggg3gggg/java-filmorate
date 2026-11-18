@@ -22,6 +22,7 @@ public class ErrorHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
+        e.printStackTrace();
         return new ErrorResponse("Произошла внутренняя ошибка сервера");
     }
 }
