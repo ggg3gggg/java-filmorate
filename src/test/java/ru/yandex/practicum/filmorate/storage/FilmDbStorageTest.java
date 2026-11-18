@@ -10,7 +10,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmRowMapper;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserRowMapper;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +21,12 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
-@Import({FilmDbStorage.class, UserDbStorage.class})
+@Import({
+        FilmDbStorage.class,
+        UserDbStorage.class,
+        FilmRowMapper.class,
+        UserRowMapper.class
+})
 public class FilmDbStorageTest {
     @Autowired
     private FilmDbStorage filmDbStorage;
